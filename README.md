@@ -1,78 +1,48 @@
-# Linux-Installation-Notes
-This is my step-by-step instructions to download Linux inside of Virtual Box.
-## 📦 What You'll Need
+# Kali Linux in VirtualBox: Build Notes
 
-- [VirtualBox](https://www.virtualbox.org/)
-- Kali Linux 2025.2 ISO from [kali.org](https://www.kali.org/get-kali/)
-- At least 2GB RAM, 20GB disk space (recommended)
+![VirtualBox](https://img.shields.io/badge/Hypervisor-VirtualBox-183A61?style=flat-square&logo=virtualbox&logoColor=white)
+![Kali](https://img.shields.io/badge/OS-Kali%20Linux-557C94?style=flat-square&logo=kalilinux&logoColor=white)
+![Status](https://img.shields.io/badge/Status-Working%20Lab-2ea44f?style=flat-square)
 
-## 🖥️ Step-by-Step Setup
+A documented walkthrough of how I built my Kali Linux lab VM inside VirtualBox, from a blank hypervisor to a hardened, snapshotted machine ready for security work. Every setting below is what I actually used, with notes on why.
 
-### 1. Download Kali Linux ISO
+## Wiki
 
-- Go to [kali.org](https://www.kali.org/get-kali/) and download the **Kali Linux 2025.2 Installer ISO**.
+| # | Page | What it covers |
+|---|------|----------------|
+| 1 | [Prerequisites](docs/01-prerequisites.md) | Host requirements, downloads, verifying the ISO |
+| 2 | [Creating the VM](docs/02-create-vm.md) | VirtualBox settings, CPU, RAM, disk, attaching the ISO |
+| 3 | [Installing Kali](docs/03-install-kali.md) | Installer walkthrough: user, partitioning, desktop, GRUB |
+| 4 | [Post Install](docs/04-post-install.md) | Updates, guest additions, first hardening steps |
+| 5 | [Networking and Snapshots](docs/05-networking-and-snapshots.md) | Network modes for lab isolation, snapshot strategy |
+| 6 | [Troubleshooting](docs/06-troubleshooting.md) | Problems I hit and how to fix them |
 
-### 2. Create a Virtual Machine
+## My Build at a Glance
 
-- Open **VirtualBox**
-- Click `New`
-- Name it whatever you want (e.g. `Kali VM`)
-- Choose:
-  - **Type:** Linux
-  - **Version:** Debian (64-bit)
-  - **Memory Size:** 2048 MB or more I chose 4507 MB
-  - **Disk:** Create a virtual hard disk (20GB+ recommended) I chose 50 GB
+| Setting | Value |
+|---------|-------|
+| Hypervisor | Oracle VirtualBox |
+| Guest OS | Kali Linux 2025.2 (Installer ISO) |
+| VM type | Linux / Debian (64-bit) |
+| RAM | ~4.5 GB (4507 MB) |
+| Disk | 50 GB, dynamically allocated VDI |
+| Partitioning | Entire disk, all files in one partition |
+| Desktop | GNOME |
+| Bootloader | GRUB on `/dev/sda` |
+| Hostname | `debugged` |
 
-### 3. Attach Kali ISO
+## Why This Exists
 
-- Go to **Settings** → **Storage**
-- Under **Controller: IDE**, click the **CD icon** next to "Optical Drive"
-- Select "Choose a disk file…" and pick the **Kali ISO**
-- Click **OK**
+Kali is the base for the rest of my security work (web app testing with Burp Suite, my own security tooling, and phishing analysis). Writing the build down means I can rebuild it the same way every time and anyone following along can do the same.
 
-### 4. Start the Virtual Machine
+## Quick Start
 
-- Start the VM and wait for the **Kali Linux boot menu**
-- Select **Install** and press Enter
+If you just want the short version:
 
----
+1. Download the Kali **Installer** ISO and VirtualBox
+2. New VM: Linux, Debian 64-bit, 4 GB+ RAM, 2+ CPUs, 50 GB disk
+3. Skip unattended install, attach the ISO, boot, choose **Graphical install**
+4. Use the whole disk, one partition, install GRUB to `/dev/sda`
+5. After first boot: `sudo apt update && sudo apt full-upgrade -y`, then take a snapshot
 
-## 🌐 Installer Walkthrough
-
-### Language & Location
-
-- Language: `English`  
-- Location: `United States`  
-- Keyboard: `United States`
-
-### User Setup
-
-- **Hostname:** `debugged` (You can name this anything)
-- **Domain Name:** `home`
-- **Full Name:** Your real first and last name
-- **Username:** e.g. `djxsec`
-- **Password:** Set a secure password
-- **Time Zone:** `Central Time (Texas)`
-
-### Partitioning
-
-- Choose: `Use entire disk`
-- Disk should show something like: `/dev/sda`
-- Select: `All files in one partition (recommended for new users)`
-- Finish partitioning and write changes to disk
-
-### Software Selection
-
-- Select: `GNOME` desktop environment (or your preference)
-
-### Bootloader Setup
-
-- Install GRUB bootloader
-- Choose: `/dev/sda`
-
-### Final Steps
-
-- Finish the installation
-- Reboot the system
-- Login with your username and password
-- Kali Linux should now boot into the GNOME desktop
+Full details are in the wiki pages above.
